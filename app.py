@@ -2,17 +2,16 @@ from flask import Flask, request, jsonify
 from PIL import Image
 import numpy as np
 from models.burnModel import BurnModel
-import tensorflow as tf
-from models.TypeModel import Type
-from models.Skin import SkinModel
+from models.SkinDiseaseModel import SkinDisease
+from models.TypeModel import TypeModel
 
 
 app = Flask(__name__)
 
 # Load TensorFlow models
 burnDegree = BurnModel('models/purnDegree.h5')
-#typeModel = Type('models/Type.h5')
-skinModel = SkinModel('models/skin_disease_model.h5')
+skinModel = SkinDisease('models/skin.h5')
+typeModel = TypeModel('models/type.pkl')
 
 
 
@@ -22,8 +21,6 @@ def preprocess_image(image):
     image = np.array(image)  # Convert the image to a numpy array
     image = np.expand_dims(image, axis=0)  # Add batch dimension
     return image
-
-
 
 
 @app.route('/predict', methods=['POST'])
@@ -40,10 +37,17 @@ def predict():
         response_list = []
         # Open the image file
         image = Image.open(file.stream)
+
+        typePred = typeModel.predict(image)
+
+        if typePred == 'burn wound':
+            image_process = preprocess_image(image)
+            response = burnDegree.predict_burn_degree(image_process)
+            response_list.append(response)
+        else: 
+            response_list.append(typePred)
         
-        image_process = preprocess_image(image)
-        response = burnDegree.predict_burn_degree(image_process)
-        response_list.append(response)
+        
 
         image_skin = skinModel.preprocessing(image)
         skin_response = skinModel.predict(image_skin)

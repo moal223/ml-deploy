@@ -13,9 +13,6 @@ class BurnModel:
         max_value = max(output_list[0])
         max_index = output_list[0].index(max_value)
 
-        if max_value < 0.5:
-            return "no"
-
         if max_value < 0:
             return "No"
         elif max_index == 0:
