@@ -38,14 +38,14 @@ def predict():
         # Open the image file
         image = Image.open(file.stream)
 
-        typePred = typeModel.predict(image)
+        # typePred = typeModel.predict(image)
 
-        if typePred == 'burn wound':
-            image_process = preprocess_image(image)
-            response = burnDegree.predict_burn_degree(image_process)
-            response_list.append(response)
-        else: 
-            response_list.append(typePred)
+        # if typePred == 'burn wound':
+        #     image_process = preprocess_image(image)
+        #     response = burnDegree.predict_burn_degree(image_process)
+        #     response_list.append(response)
+        # else: 
+        #     response_list.append(typePred)
         
         
 

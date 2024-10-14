@@ -108,21 +108,23 @@ model = load_model(r"./models/skin2.h5")
 
 
 
-# Read the image and prepare it for prediction
-def prepare_image(image_path):
-    img = Image.open(image_path)
-    img_resized = img.resize((224, 224))
-    img_scaled = img_resized / 255.0  # Scale pixel values to the range [0,1]
-    img_scaled = np.expand_dims(img_scaled, axis=0)  # Add an extra dimension to make it (1, 224, 224, 3)
-    return img_scaled # Return the scaled image and the resized original for display
+import numpy as np
+import cv2
+from PIL import Image
+import matplotlib.pyplot as plt
 
-# Use the model to predict the new image and display the image
+# Read and prepare the new image for testing
+def prepare_image(image_path):
+    img = cv2.imread(image_path)
+    img_resized = cv2.resize(img, (224, 224))
+    img_scaled = img_resized / 255.0  # Scale the values to the range [0, 1]
+    img_scaled = np.expand_dims(img_scaled, axis=0)  # Add a new dimension to make it (1, 224, 224, 3)
+    return img_scaled
+
+# Use the model to predict the new image
 def predict_new_image(image_path):
-    img_scaled = prepare_image(image_path)
-    
-    
-    # Make prediction using the model
-    prediction = model.predict(img_scaled)
+    img = prepare_image(image_path)
+    prediction = model.predict(img)
     
     # Extract the predicted class
     predicted_label = np.argmax(prediction)
@@ -132,7 +134,6 @@ def predict_new_image(image_path):
     label_mapping = {0: 'cellulitis', 1: 'impetigo', 2: 'athlete-foot', 3: 'nail-fungus', 
                      4: 'ringworm', 5: 'cutaneous-larva-migrans', 6: 'chickenpox', 7: 'shingles'}
     print(f"The model predicts that this is: {label_mapping[predicted_label]} with confidence {confidence:.2f}")
-
 
 image_path = r"C:\\gp-project\\imgs\\chickenpox.jpeg"
 predict_new_image(image_path)
