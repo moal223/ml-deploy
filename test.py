@@ -127,7 +127,7 @@ def predict_new_image(image_path):
     prediction = model.predict(img)
     
     # Extract the predicted class
-    predicted_label = np.argmax(prediction)
+    predicted_label = np.argmax(prediction) 
     confidence = np.max(prediction)
     
     # Print the result
@@ -137,17 +137,3 @@ def predict_new_image(image_path):
 
 image_path = r"C:\\gp-project\\imgs\\chickenpox.jpeg"
 predict_new_image(image_path)
-
-
-# import requests
-
-# # Define the URL of the Flask endpoint
-# url = 'http://127.0.0.1:5000/predict'
-
-# files = {'file': open('C:\\gp-project\\imgs\\3rd.jpeg', 'rb')}
-
-# response = requests.post(url, files=files)
-
-# # Print the response from the server
-# print(response.status_code)  # Should be 200 if successful
-# print(response.json()) 
