@@ -82,15 +82,71 @@
 # print(result)
 
 
-import requests
 
-# Define the URL of the Flask endpoint
-url = 'http://127.0.0.1:5000/predict'
 
-files = {'file': open('C:\\gp-project\\imgs\\3rd.jpeg', 'rb')}
 
-response = requests.post(url, files=files)
+# def preprocessing(image):
+#     image_resize = image.resize((224, 224))  
+#     image_array = np.array(image_resize)
+#     image_array /= 255.0
+#     return image_array
 
-# Print the response from the server
-print(response.status_code)  # Should be 200 if successful
-print(response.json()) 
+# image = Image.open('C:\\gp-project\\imgs\\chickenpox.jpeg')
+
+# image_pre = preprocessing(image)
+
+
+
+from tensorflow.keras.models import load_model
+import numpy as np
+# import cv2
+from PIL import Image
+
+
+model = load_model(r"./models/skin2.h5")
+
+
+
+
+# Read the image and prepare it for prediction
+def prepare_image(image_path):
+    img = Image.open(image_path)
+    img_resized = img.resize((224, 224))
+    img_scaled = img_resized / 255.0  # Scale pixel values to the range [0,1]
+    img_scaled = np.expand_dims(img_scaled, axis=0)  # Add an extra dimension to make it (1, 224, 224, 3)
+    return img_scaled # Return the scaled image and the resized original for display
+
+# Use the model to predict the new image and display the image
+def predict_new_image(image_path):
+    img_scaled = prepare_image(image_path)
+    
+    
+    # Make prediction using the model
+    prediction = model.predict(img_scaled)
+    
+    # Extract the predicted class
+    predicted_label = np.argmax(prediction)
+    confidence = np.max(prediction)
+    
+    # Print the result
+    label_mapping = {0: 'cellulitis', 1: 'impetigo', 2: 'athlete-foot', 3: 'nail-fungus', 
+                     4: 'ringworm', 5: 'cutaneous-larva-migrans', 6: 'chickenpox', 7: 'shingles'}
+    print(f"The model predicts that this is: {label_mapping[predicted_label]} with confidence {confidence:.2f}")
+
+
+image_path = r"C:\\gp-project\\imgs\\chickenpox.jpeg"
+predict_new_image(image_path)
+
+
+# import requests
+
+# # Define the URL of the Flask endpoint
+# url = 'http://127.0.0.1:5000/predict'
+
+# files = {'file': open('C:\\gp-project\\imgs\\3rd.jpeg', 'rb')}
+
+# response = requests.post(url, files=files)
+
+# # Print the response from the server
+# print(response.status_code)  # Should be 200 if successful
+# print(response.json()) 

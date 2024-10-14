@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 # Load TensorFlow models
 burnDegree = BurnModel('models/purnDegree.h5')
-skinModel = SkinDisease('models/skin.h5')
+skinModel = SkinDisease('models/skin2.h5')
 typeModel = TypeModel('models/type.pkl')
 
 
