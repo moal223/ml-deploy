@@ -35,7 +35,6 @@ def predict():
     
     try:
         response_list = []
-        # Open the image file
         image = Image.open(file.stream)
 
         # typePred = typeModel.predict(image)
